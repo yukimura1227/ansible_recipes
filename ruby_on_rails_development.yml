@@ -1,0 +1,7 @@
+---
+- name: setup ruby on rails development environment
+  hosts: ruby_on_rails_development
+  roles:
+    - ruby
+  vars:
+    ruby_version: 2.6.3

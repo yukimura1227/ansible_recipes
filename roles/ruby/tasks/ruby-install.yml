@@ -1,0 +1,56 @@
+- name: install build depends by Ruby
+  yum: name={{item}} state=present
+  with_items:
+    - gcc
+    - openssl-devel
+    - libyaml-devel
+    - readline-devel
+    - zlib-devel
+  become: yes
+  tags:
+    - ruby
+    - ruby:install
+    - install
+
+# NOTE: sudo経由でrbenvを使えるようにするために
+# visudo でsecure_pathを以下のように書き換えておく必要がある。
+# Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/rbenv/bin:/usr/local/rbenv/shims
+- name: check ruby rbenv installed
+  shell: cd; bash -lc "rbenv versions | grep ^\*  | cut -f2 -d' '"
+  register: ruby_installed
+  changed_when: False # because only version check
+  ignore_errors: yes
+  tags:
+    - ruby
+    - ruby:install
+    - install
+
+- name: rbenv install
+  shell: rbenv install {{ ruby_version }}
+  become: yes
+  when: ruby_installed.stdout != ruby_version
+  environment:
+    RBENV_ROOT: "/usr/local/rbenv"
+  tags:
+    - ruby
+    - ruby:install
+    - install
+
+- name: rbenv global
+  shell: rbenv global {{ ruby_version }}
+  become: yes
+  when: ruby_installed.stdout != ruby_version
+  environment:
+    RBENV_ROOT: "/usr/local/rbenv"
+  tags:
+    - ruby
+    - ruby:install
+    - install
+
+- name: gem install bundler
+  gem:
+    user_install: no
+    executable: /usr/local/rbenv/shims/gem
+    name: bundler
+    state: latest
+  become: yes
