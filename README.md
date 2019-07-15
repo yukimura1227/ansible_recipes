@@ -22,6 +22,6 @@ hogehoge.com | SUCCESS => {
 
 ```
 # deploy
-ansible-playbook -v ruby_on_rails_development.yml -i production/ --private-key=~//ec2_for_development.pem
+ansible-playbook -v ruby_on_rails_development.yml -i production/ --private-key=~/ec2_for_development.pem
 ```
 
