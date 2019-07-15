@@ -1,0 +1,5 @@
+---
+- name: setup ansible machine environment
+  hosts: ansible_machine
+  roles:
+    - ansible

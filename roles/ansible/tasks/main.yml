@@ -1,0 +1,38 @@
+- name: check_amazon_linux_extras_exists
+  command: "which amazon-linux-extras"
+  register: check_amazon_linux_extras_result
+  changed_when: False # because only checking
+  failed_when: check_amazon_linux_extras_result.rc not in [0, 1] # avoid failed if grep returns 1(string not exist)
+
+- name: check_ansible_exists
+  command: "which ansible"
+  register: check_ansible_result
+  changed_when: False # because only checking
+  failed_when: check_ansible_result.rc not in [0, 1] # avoid failed if grep returns 1(string not exist)
+  become: yes
+
+- name: install_epel
+  when:
+    - check_amazon_linux_extras_result.rc != 0
+  yum:
+    name: epel-release
+    state: present
+  become: yes
+
+- name: install_ansible_by_yum
+  when:
+    - check_amazon_linux_extras_result.rc != 0
+    - check_ansible_result.rc == 1
+  become: yes
+  yum:
+    state: installed
+    name: ansible
+    enablerepo: epel
+
+- name: install_ansible_by_amazon_linux_extras
+  when:
+    - check_amazon_linux_extras_result.rc == 0
+    - check_ansible_result.rc == 1
+  become: yes
+  command: "amazon-linux-extras install -y ansible2"
+
