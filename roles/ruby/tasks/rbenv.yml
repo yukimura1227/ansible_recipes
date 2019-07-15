@@ -18,3 +18,28 @@
   tags:
     - ruby
     - rbenv
+
+- name: check rbenv path to /etc/sudoers
+  command: "grep ':/usr/local/rbenv/bin:/usr/local/rbenv/shims' /etc/sudoers"
+  register: grep_rbenv_result
+  changed_when: False # because only checking
+  failed_when: grep_rbenv_result.rc not in [0, 1] # avoid failed if grep returns 1(string not exist)
+  become: yes
+  tags:
+    - ruby
+    - rbenv
+
+- name: allow rbenv on sudo
+  become: yes
+  when: grep_rbenv_result.rc != 0
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^(Defaults\s+secure_path\s*=\s*.*)'
+    backrefs: yes
+    line: '\1:/usr/local/rbenv/bin:/usr/local/rbenv/shims'
+
+  tags:
+    - ruby
+    - rbenv
+
