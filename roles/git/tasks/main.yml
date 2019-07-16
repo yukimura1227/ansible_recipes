@@ -1,0 +1,6 @@
+# TODO: yumでinstallするgitは古いのでソースからビルドしたい
+- name: install the latest version of git via yum
+  yum:
+    name: git
+    state: latest
+  become: yes
