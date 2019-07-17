@@ -1,0 +1,21 @@
+- name: copy id_rsa
+  copy:
+    src: ~/.ssh/id_rsa
+    dest: ~/.ssh/id_rsa
+    mode: 0600
+
+- name: copy id_rsa.pub
+  copy:
+    src: ~/.ssh/id_rsa.pub
+    dest: ~/.ssh/id_rsa.pub
+    mode: 0644
+
+- name: check already written authorized_keys
+  command: "grep '`cat ~/.ssh/id_rsa.pub`' ~/.ssh/authorized_keys"
+  register: grep_id_rsa_pub_in_authorized_keys_result
+  changed_when: False # because only checking
+  failed_when: grep_id_rsa_pub_in_authorized_keys_result.rc not in [0, 1] # avoid failed if grep returns 1(string not exist)
+
+- name: set authorized_keys
+  when: grep_id_rsa_pub_in_authorized_keys_result.rc != 0
+  shell: "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys"

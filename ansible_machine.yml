@@ -3,5 +3,6 @@
   hosts: ansible_machine
   roles:
     - git
+    - copy_same_public_key
     - store_secret_key
     - ansible

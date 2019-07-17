@@ -2,6 +2,7 @@
 - name: setup ruby on rails development environment
   hosts: ruby_on_rails_development
   roles:
+    - copy_same_public_key
     - ruby
   vars:
     ruby_version: 2.6.3
