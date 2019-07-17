@@ -1,0 +1,5 @@
+- name: put_development.pem
+  copy:
+    src: .ssh/development.pem
+    dest: ~/.ssh/development.pem
+    mode: 0600

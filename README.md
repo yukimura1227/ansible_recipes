@@ -4,6 +4,12 @@
 see:
 https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html#alternative-directory-layout
 
+## Usage
+Please, set private key files.
+```
+roles/store_secret_key/files/.ssh/development.pem
+```
+
 ## command samples
 ```
 # 疎通確認
